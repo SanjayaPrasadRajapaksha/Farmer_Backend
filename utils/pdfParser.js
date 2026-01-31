@@ -1,3 +1,5 @@
+import fs from "fs"
+import Category from "../models/category.model.js"
 import Economic_Center_Location from "../models/economic_center_location.model.js"
 import Price_Type from "../models/price_type.model.js"
 import Product from "../models/product.model.js"
@@ -13,13 +15,71 @@ function parsePdfNumber(numStr) {
   return parseFloat(String(numStr).replace(/,/g, ""))
 }
 
-async function getProductId(name) {
-  const cleanName = name.replace(/\u00a0/g, " ").replace(/\s+/g, " ").trim()
+function normalizeProductName(name) {
+  return String(name ?? "")
+    .replace(/\u00a0/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+}
+
+let productToCategoryNameCache = null
+let categoryIdCache = new Map()
+
+function loadCategoryJsonMapping() {
+  if (productToCategoryNameCache) return productToCategoryNameCache
+
+  try {
+    const categoryJsonUrl = new URL("../category.json", import.meta.url)
+    const raw = fs.readFileSync(categoryJsonUrl, "utf-8")
+    const parsed = JSON.parse(raw)
+
+    const mapping = new Map()
+    for (const [categoryName, productNames] of Object.entries(parsed)) {
+      if (!Array.isArray(productNames)) continue
+      for (const productName of productNames) {
+        const clean = normalizeProductName(productName)
+        if (!clean) continue
+        mapping.set(clean.toLowerCase(), String(categoryName).trim())
+      }
+    }
+
+    productToCategoryNameCache = mapping
+    return mapping
+  } catch (err) {
+    console.warn("category.json mapping not loaded:", err.message)
+    productToCategoryNameCache = new Map()
+    return productToCategoryNameCache
+  }
+}
+
+async function getCategoryIdByName(categoryName) {
+  const clean = String(categoryName ?? "").trim()
+  if (!clean) return null
+
+  if (categoryIdCache.has(clean)) return categoryIdCache.get(clean)
+
+  const [category] = await Category.findOrCreate({
+    where: { name: clean },
+    defaults: { name: clean }
+  })
+
+  categoryIdCache.set(clean, category.id)
+  return category.id
+}
+
+async function getProductId(name, category_id = null) {
+  const cleanName = normalizeProductName(name)
 
   const [product] = await Product.findOrCreate({
     where: { name: cleanName },
-    defaults: { unit: 1, imageURL: "", category_id: null }
+    defaults: { unit: 1, imageURL: "", category_id: category_id ?? null }
   })
+
+  // If product already exists but missing category, update it
+  if (category_id && !product.category_id) {
+    product.category_id = category_id
+    await product.save()
+  }
 
   return product.id
 }
@@ -43,10 +103,13 @@ export default async function parsePDFRows(
   locationName = "Dambulla",
   priceTypeName = "Retail"
 ) {
+  const categoryMapping = loadCategoryJsonMapping()
   const resultsByKey = new Map()
   const unmatchedLines = []
   const duplicateRows = []
   const productNameCounts = new Map()
+  let categorizedProducts = 0
+  let uncategorizedProducts = 0
 
   const location_id = await getLocationId(locationName)
   const price_type_id = await getPriceTypeId(priceTypeName)
@@ -85,7 +148,15 @@ export default async function parsePDFRows(
 
     const avgPrice = ((minPrice + maxPrice) / 2).toFixed(2)
 
-    const product_id = await getProductId(cleanProductName)
+    const mappedCategoryName = categoryMapping.get(cleanProductName.toLowerCase())
+    const category_id = mappedCategoryName
+      ? await getCategoryIdByName(mappedCategoryName)
+      : null
+
+    if (category_id) categorizedProducts++
+    else uncategorizedProducts++
+
+    const product_id = await getProductId(cleanProductName, category_id)
 
     const key = `${product_id}|${location_id}|${price_type_id}|${dateStr}`
     const previous = resultsByKey.get(key)
@@ -141,7 +212,9 @@ export default async function parsePDFRows(
       date: dateStr,
       duplicatesCollapsed: duplicateRows.length,
       duplicateProducts,
-      duplicateRowsSample: duplicateRows.slice(0, 10)
+      duplicateRowsSample: duplicateRows.slice(0, 10),
+      categorizedProducts,
+      uncategorizedProducts
     }
   }
 }

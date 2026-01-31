@@ -17,7 +17,8 @@ const Market_Price = sequelize.define('Market_Price', {
     },
     isVerify: {
         type: DataTypes.BOOLEAN,
-        default: false
+        allowNull: false,
+        defaultValue: false
     },
     Date: {
         type: DataTypes.STRING,
