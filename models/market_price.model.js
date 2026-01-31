@@ -12,7 +12,7 @@ const Market_Price = sequelize.define('Market_Price', {
         primaryKey: true
     },
     price: {
-        type: DataTypes.NUMBER,
+        type: DataTypes.DECIMAL(10, 2),
         allowNull: false
     },
     isVerify: {
@@ -27,7 +27,7 @@ const Market_Price = sequelize.define('Market_Price', {
         type: DataTypes.INTEGER,
         allowNull: true,
         references: {
-            model: Market_Price,
+            model: Economic_Center_Location,
             key: 'id'
         },
     },
