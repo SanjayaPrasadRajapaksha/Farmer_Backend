@@ -26,7 +26,7 @@ export const seedCategories = async () => {
         "Fruit",
         "Potatoes",
         "Leaf Vegetable",
-        "Rice"
+        "Rice & Grains"
     ];
 
     for (const name of CATEGORY_KEYWORDS) {

@@ -3,8 +3,7 @@ import Price_Type from "../models/price_type.model.js"
 import Product from "../models/product.model.js"
 
 // 🔹 PDF-safe regex
-const rowRegex =
-  /(\d+)\s+([\s\S]+?)\s+Rs\.?\s*([\d,]+(?:\.\d{1,2})?)\s+Rs\.?\s*([\d,]+(?:\.\d{1,2})?)/gi
+  const rowRegex = /(\d+)\s+(.+?)\s+Rs\.\s*(\d+(?:\.\d+)?)\s+Rs\.\s*(\d+(?:\.\d+)?)/gi
 
 function normalizePdfTextLine(line) {
   return line.replace(/\u00a0/g, " ") // NBSP from PDFs
