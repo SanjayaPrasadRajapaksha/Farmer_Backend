@@ -1,10 +1,46 @@
-import fs from "fs"
+import fs from "node:fs"
 import { PDFParse } from "pdf-parse"
 import MarketPriceRepository from "../repositories/market_price.repo.js"
 import parsePDFRows from "../utils/pdfParser.js"
 
-class MarketPriceService {
-  static async processPDF(input) {
+const MarketPriceService = {
+  async create(price, date, economic_center_location_id, price_type_id, product_id, isVerify) {
+    try {
+      const result = await MarketPriceRepository.create(
+        price,
+        date,
+        economic_center_location_id,
+        price_type_id,
+        product_id,
+        isVerify
+      )
+      return { status: true, result }
+    } catch (error) {
+      return { status: false, message: error.message }
+    }
+  },
+
+  async getAll() {
+    return MarketPriceRepository.getAll()
+  },
+
+  async findById(id) {
+    return MarketPriceRepository.findById(id)
+  },
+
+  async updateById(id, payload) {
+    return MarketPriceRepository.updateById(id, payload)
+  },
+
+  async verifyById(id, isVerify = true) {
+    return MarketPriceRepository.verifyById(id, isVerify)
+  },
+
+  async deleteById(id) {
+    return MarketPriceRepository.deleteById(id)
+  },
+
+  async processPDF(input) {
     try {
       let buffer
       let cleanupPath = null
@@ -20,7 +56,7 @@ class MarketPriceService {
         cleanupPath = input.path
         buffer = fs.readFileSync(input.path)
       } else {
-        throw new Error("No PDF file data received")
+        throw new TypeError("No PDF file data received")
       }
 
       const parser = new PDFParse({ data: buffer })
@@ -30,11 +66,7 @@ class MarketPriceService {
       const { rows, meta } = await parsePDFRows(textResult.text)
 
       if (rows.length > 0) {
-        const { economic_center_location_id, price_type_id, Date } = rows[0]
-        await MarketPriceRepository.replaceMarketPricesForCriteria(
-          { economic_center_location_id, price_type_id, Date },
-          rows
-        )
+        await MarketPriceRepository.appendMarketPrices(rows)
       }
 
       if (cleanupPath) {

@@ -7,7 +7,6 @@ const ProductRepo = {
             const result = await Product.create({
                 name: name,
                 unit: unit,
-                imageURL: "",
                 category_id: category_id
             });
             return result;
