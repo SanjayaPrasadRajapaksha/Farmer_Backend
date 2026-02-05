@@ -4,6 +4,7 @@ import cors from "cors";
 import sequelize from "./config/db.config.js";
 import Category, { initializeCategoryTable } from "./models/category.model.js";
 import market_price_router from "./routes/market_price.route.js";
+import CategoryRouter from "./routes/category.route.js";
 
 dotenv.config();
 const app = express();
@@ -37,6 +38,7 @@ sequelize
 
 // Main Routes
 app.use('/api/market_price',market_price_router);
+app.use('/api/category', CategoryRouter);
 
 // Run server
 app.listen(PORT, () => {
