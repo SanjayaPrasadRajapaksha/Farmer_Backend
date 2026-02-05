@@ -5,6 +5,7 @@ import sequelize from "./config/db.config.js";
 import Category, { initializeCategoryTable } from "./models/category.model.js";
 import market_price_router from "./routes/market_price.route.js";
 import CategoryRouter from "./routes/category.route.js";
+import Economic_CenterRouter from "./routes/economic_center_location.route.js";
 
 dotenv.config();
 const app = express();
@@ -39,7 +40,7 @@ sequelize
 // Main Routes
 app.use('/api/market_price',market_price_router);
 app.use('/api/category', CategoryRouter);
-
+app.use('/api/economic_center', Economic_CenterRouter);
 // Run server
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
