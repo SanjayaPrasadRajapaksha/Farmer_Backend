@@ -1,4 +1,3 @@
-
 import Economic_CenterService from "../services/economic_center_location.service.js";
 
 const Economic_CenterController = {

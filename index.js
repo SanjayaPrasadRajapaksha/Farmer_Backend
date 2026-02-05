@@ -3,7 +3,6 @@ import dotenv from "dotenv";
 import express from "express";
 import sequelize from "./config/db.config.js";
 import { initializeCategoryTable } from "./models/category.model.js";
-// Ensure all Sequelize models are registered before sync()
 import "./models/economic_center_location.model.js";
 import "./models/market_price.model.js";
 import "./models/price_type.model.js";

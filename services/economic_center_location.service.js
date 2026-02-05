@@ -1,6 +1,5 @@
 import Economic_CenterRepo from "../repositories/economic_center_location.repo.js";
 
-
 const Economic_CenterService = {
     create: async (name) => {
         try {

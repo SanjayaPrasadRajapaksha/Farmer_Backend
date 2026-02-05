@@ -1,4 +1,3 @@
-// controllers/marketPrice.controller.js
 import MarketPriceService from "../services/market_price.service.js"
 
 const MarketPriceController = {

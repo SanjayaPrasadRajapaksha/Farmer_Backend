@@ -1,4 +1,3 @@
-// models/user.model.js
 import { DataTypes } from 'sequelize';
 import sequelize from '../config/db.config.js';
 import Economic_Center_Location from './economic_center_location.model.js';
