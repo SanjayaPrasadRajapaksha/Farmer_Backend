@@ -15,7 +15,7 @@ const Price_TypeRepo = {
 
     findById: async (id) => {
         try {
-            const result = await Category.findOne({
+            const result = await Price_Type.findOne({
                 where: {
                     id: id,
                 },
@@ -29,7 +29,7 @@ const Price_TypeRepo = {
 
     getAll: async () => {
         try {
-            const result = await Category.findAll({
+            const result = await Price_Type.findAll({
             });
             return result;
         } catch (err) {
@@ -39,7 +39,7 @@ const Price_TypeRepo = {
 
     updateById: async (id, name) => {
         try {
-            const result = await Category.update({
+            const result = await Price_Type.update({
                 name: name,
             }, {
                 where: {
@@ -54,7 +54,7 @@ const Price_TypeRepo = {
 
     deleteById: async (id) => {
         try {
-            const result = await Category.destroy({
+            const result = await Price_Type.destroy({
                 where: {
                     id: id,
                 },
@@ -68,4 +68,4 @@ const Price_TypeRepo = {
 }
 
 
-export default CategoryRepo;
+export default Price_TypeRepo;

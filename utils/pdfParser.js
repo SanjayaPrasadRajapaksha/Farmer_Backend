@@ -101,7 +101,7 @@ async function getPriceTypeId(typeName) {
 export default async function parsePDFRows(
   text,
   locationName = "Dambulla",
-  priceTypeName = "Retail"
+  priceTypeName = "Daily Market Price"
 ) {
   const categoryMapping = loadCategoryJsonMapping()
   const resultsByKey = new Map()
