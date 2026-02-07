@@ -46,7 +46,7 @@ const MarketPriceRepository = {
 
   async verifyById(id, isVerify) {
     const result = await Market_Price.update(
-      { isVerify:isVerify },
+      { isVerify: isVerify },
       { where: { id } }
     )
     return result[0]
@@ -68,47 +68,47 @@ const MarketPriceRepository = {
 
   // Update existing rows by composite key (product/location/type/date), otherwise insert.
   // This prevents wiping all existing market prices when uploading another PDF for the same day.
-  async upsertMarketPricesByCompositeKey(rows) {
-    if (!Array.isArray(rows) || rows.length === 0) return 0
+  // async upsertMarketPricesByCompositeKey(rows) {
+  //   if (!Array.isArray(rows) || rows.length === 0) return 0
 
-    const sequelize = Market_Price.sequelize
-    return sequelize.transaction(async (transaction) => {
-      let affected = 0
+  //   const sequelize = Market_Price.sequelize
+  //   return sequelize.transaction(async (transaction) => {
+  //     let affected = 0
 
-      for (const row of rows) {
-        const {
-          product_id,
-          economic_center_location_id,
-          price_type_id,
-          Date: date,
-        } = row
+  //     for (const row of rows) {
+  //       const {
+  //         product_id,
+  //         economic_center_location_id,
+  //         price_type_id,
+  //         Date: date,
+  //       } = row
 
-        const [updatedCount] = await Market_Price.update(
-          {
-            price: row.price,
-            isVerify: row.isVerify ?? false,
-          },
-          {
-            where: {
-              product_id,
-              economic_center_location_id,
-              price_type_id,
-              Date: date,
-            },
-            transaction,
-          }
-        )
+  //       const [updatedCount] = await Market_Price.update(
+  //         {
+  //           price: row.price,
+  //           isVerify: row.isVerify ?? false,
+  //         },
+  //         {
+  //           where: {
+  //             product_id,
+  //             economic_center_location_id,
+  //             price_type_id,
+  //             Date: date,
+  //           },
+  //           transaction,
+  //         }
+  //       )
 
-        if (updatedCount === 0) {
-          await Market_Price.create(row, { transaction })
-        }
+  //       if (updatedCount === 0) {
+  //         await Market_Price.create(row, { transaction })
+  //       }
 
-        affected += 1
-      }
+  //       affected += 1
+  //     }
 
-      return affected
-    })
-  },
+  //     return affected
+  //   })
+  // },
 
   async replaceMarketPricesForCriteria(criteria, data) {
     const sequelize = Market_Price.sequelize

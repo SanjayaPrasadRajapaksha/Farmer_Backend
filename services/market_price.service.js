@@ -44,7 +44,7 @@ const MarketPriceService = {
     try {
       let buffer
       let cleanupPath = null
-
+      // Determine how to read the PDF data based on the input type
       if (Buffer.isBuffer(input)) {
         buffer = input
       } else if (typeof input === "string") {
@@ -59,6 +59,7 @@ const MarketPriceService = {
         throw new TypeError("No PDF file data received")
       }
 
+      //This function use to extract text from PDF and parse it to rows of market price data
       const parser = new PDFParse({ data: buffer })
       const textResult = await parser.getText()
       await parser.destroy()

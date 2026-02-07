@@ -4,17 +4,20 @@ import Economic_Center_Location from "../models/economic_center_location.model.j
 import Price_Type from "../models/price_type.model.js"
 import Product from "../models/product.model.js"
 
-// 🔹 PDF-safe regex
-  const rowRegex = /(\d+)\s+(.+?)\s+Rs\.\s*(\d+(?:\.\d+)?)\s+Rs\.\s*(\d+(?:\.\d+)?)/gi
+// PDF-safe regex
+//This regex helps you find each row and split it into fields.
+const rowRegex = /(\d+)\s+(.+?)\s+Rs\.\s*(\d+(?:\.\d+)?)\s+Rs\.\s*(\d+(?:\.\d+)?)/gi
 
+// This function normalizes text lines from PDFs by replacing non-breaking spaces with regular spaces.
 function normalizePdfTextLine(line) {
   return line.replace(/\u00a0/g, " ") // NBSP from PDFs
 }
 
+// This function converts price strings like "1,234.56" into numbers.
 function parsePdfNumber(numStr) {
   return parseFloat(String(numStr).replace(/,/g, ""))
 }
-
+// This function cleans up product names by normalizing spaces and trimming.
 function normalizeProductName(name) {
   return String(name ?? "")
     .replace(/\u00a0/g, " ")
@@ -124,7 +127,13 @@ export default async function parsePDFRows(
   let match
   while ((match = rowRegex.exec(normalizedText)) !== null) {
     totalParsed++
+    //match[1] → row number
 
+    //match[2] → product name
+
+    //match[3] → min price
+
+    //match[4] → max price
     const productName = String(match[2] ?? "")
     const minPrice = parsePdfNumber(match[3])
     const maxPrice = parsePdfNumber(match[4])
