@@ -8,4 +8,5 @@ router.get("/getAll", Economic_CenterController.getAll);
 router.get("/getById/:id", Economic_CenterController.findById);
 router.delete("/deleteById/:id", Economic_CenterController.deleteById);
 
+
 export default router;

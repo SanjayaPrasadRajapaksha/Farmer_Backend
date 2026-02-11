@@ -52,6 +52,14 @@ const MarketPriceRepository = {
     return result[0]
   },
 
+    async verifyAll(isVerify) {
+    const result = await Market_Price.update(
+      { isVerify: isVerify },
+      { where: {} }
+    )
+    return result[0]
+  },
+
   async deleteById(id) {
     return Market_Price.destroy({ where: { id } })
   },

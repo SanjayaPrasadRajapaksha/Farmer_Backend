@@ -32,8 +32,12 @@ const MarketPriceService = {
     return MarketPriceRepository.updateById(id, payload)
   },
 
-  async verifyById(id, isVerify = true) {
+  async verifyById(id, isVerify) {
     return MarketPriceRepository.verifyById(id, isVerify)
+  },
+
+    async verifyAll(isVerify) {
+    return MarketPriceRepository.verifyAll(isVerify)
   },
 
   async deleteById(id) {

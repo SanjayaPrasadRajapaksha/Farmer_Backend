@@ -1,6 +1,26 @@
 import MarketPriceService from "../services/market_price.service.js"
 
 const MarketPriceController = {
+  
+  async uploadMarketPricesFromPDF(req, res) {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ error: "PDF file is required" })
+      }
+
+      const result = await MarketPriceService.processPDF(req.file)
+
+      return res.status(201).json({
+        success: true,
+        message: "Market prices extracted successfully",
+        insertedRecords: result.count,
+        parseMeta: result.meta
+      })
+    } catch (err) {
+      console.error("Controller Error:", err)
+      return res.status(500).json({ error: err.message })
+    }
+  },
   async create(req, res) {
     try {
       const { price, Date: date, economic_center_location_id, price_type_id, product_id, isVerify } = req.body
@@ -121,6 +141,22 @@ const MarketPriceController = {
     }
   },
 
+  verifyAll: async (req, res) => {
+    const { isVerify } = req.body
+    try {
+      const result = await MarketPriceService.verifyAll(isVerify)
+      return res.status(200).json({
+        response_code: 200,
+        status: true,
+        message: "Market prices verified successfully!",
+        result,
+      })
+    } catch (error) {
+      console.error(error)
+      return res.status(500).json({ response_code: 500, status: false, message: "Error occurred while verifying Market prices!" })
+    }
+  },
+
   async deleteById(req, res) {
     const id = req.params.id
     try {
@@ -135,25 +171,6 @@ const MarketPriceController = {
     }
   },
 
-  async uploadMarketPricesFromPDF(req, res) {
-    try {
-      if (!req.file) {
-        return res.status(400).json({ error: "PDF file is required" })
-      }
-
-      const result = await MarketPriceService.processPDF(req.file)
-
-      return res.status(201).json({
-        success: true,
-        message: "Market prices extracted successfully",
-        insertedRecords: result.count,
-        parseMeta: result.meta
-      })
-    } catch (err) {
-      console.error("Controller Error:", err)
-      return res.status(500).json({ error: err.message })
-    }
-  }
 }
 
 export default MarketPriceController
