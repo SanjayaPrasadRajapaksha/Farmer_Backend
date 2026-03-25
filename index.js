@@ -12,6 +12,7 @@ import Economic_CenterRouter from "./routes/economic_center_location.route.js";
 import market_price_router from "./routes/market_price.route.js";
 import Price_TypeRouter from "./routes/price_type.route.js";
 import ProductRouter from "./routes/product.route.js";
+import RoleRouter from "./routes/role.route.js";
 
 dotenv.config();
 const app = express();
@@ -27,6 +28,7 @@ app.use('/api/category', CategoryRouter);
 app.use('/api/economic_center', Economic_CenterRouter);
 app.use('/api/price_type', Price_TypeRouter);
 app.use('/api/product', ProductRouter);
+app.use('/api/role', RoleRouter);
 
 async function startServer() {
     try {
