@@ -23,14 +23,16 @@ const MarketPriceController = {
   },
   async create(req, res) {
     try {
-      const { price, Date: date, economic_center_location_id, price_type_id, product_id, isVerify } = req.body
+      const { price, date, Date, economic_center_location_id, price_type_id, product_id, verify, isVerify } = req.body
+      const resolvedDate = date ?? Date
+      const resolvedVerify = verify ?? isVerify
       const result = await MarketPriceService.create(
         price,
-        date,
+        resolvedDate,
         economic_center_location_id,
         price_type_id,
         product_id,
-        isVerify
+        resolvedVerify
       )
 
       if (result.status) {
@@ -96,15 +98,17 @@ const MarketPriceController = {
 
   async updateById(req, res) {
     const id = req.params.id
-    const { price, Date: date, economic_center_location_id, price_type_id, product_id, isVerify } = req.body
+    const { price, date, Date, economic_center_location_id, price_type_id, product_id, verify, isVerify } = req.body
+    const resolvedDate = date ?? Date
+    const resolvedVerify = verify ?? isVerify
     try {
       const result = await MarketPriceService.updateById(id, {
         price,
-        Date: date,
+        date: resolvedDate,
         economic_center_location_id,
         price_type_id,
         product_id,
-        isVerify,
+        verify: resolvedVerify,
       })
 
       if (result == 0) {
@@ -124,9 +128,10 @@ const MarketPriceController = {
 
   async verifyById(req, res) {
     const id = req.params.id
-    const { isVerify } = req.body
+    const { verify, isVerify } = req.body
+    const resolvedVerify = verify ?? isVerify
     try {
-      const result = await MarketPriceService.verifyById(id, isVerify)
+      const result = await MarketPriceService.verifyById(id, resolvedVerify)
       if (result == 0) {
         return res.status(404).json({ response_code: 404, status: false, message: "Market price not found!" })
       }
@@ -142,9 +147,10 @@ const MarketPriceController = {
   },
 
   verifyAll: async (req, res) => {
-    const { isVerify } = req.body
+    const { verify, isVerify } = req.body
+    const resolvedVerify = verify ?? isVerify
     try {
-      const result = await MarketPriceService.verifyAll(isVerify)
+      const result = await MarketPriceService.verifyAll(resolvedVerify)
       return res.status(200).json({
         response_code: 200,
         status: true,

@@ -14,14 +14,14 @@ const Market_Price = sequelize.define('Market_Price', {
         type: DataTypes.DECIMAL(10, 2),
         allowNull: false
     },
-    isVerify: {
+    verify: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
-        defaultValue: false
+        defaultValue: false,
     },
-    Date: {
+    date: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
     },
     economic_center_location_id: {
         type: DataTypes.INTEGER,

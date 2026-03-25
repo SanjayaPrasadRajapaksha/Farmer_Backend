@@ -4,7 +4,7 @@ import MarketPriceRepository from "../repositories/market_price.repo.js"
 import parsePDFRows from "../utils/pdfParser.js"
 
 const MarketPriceService = {
-  async create(price, date, economic_center_location_id, price_type_id, product_id, isVerify) {
+  async create(price, date, economic_center_location_id, price_type_id, product_id, verify) {
     try {
       const result = await MarketPriceRepository.create(
         price,
@@ -12,7 +12,7 @@ const MarketPriceService = {
         economic_center_location_id,
         price_type_id,
         product_id,
-        isVerify
+        verify
       )
       return { status: true, result }
     } catch (error) {
@@ -32,12 +32,12 @@ const MarketPriceService = {
     return MarketPriceRepository.updateById(id, payload)
   },
 
-  async verifyById(id, isVerify) {
-    return MarketPriceRepository.verifyById(id, isVerify)
+  async verifyById(id, verify) {
+    return MarketPriceRepository.verifyById(id, verify)
   },
 
-    async verifyAll(isVerify) {
-    return MarketPriceRepository.verifyAll(isVerify)
+    async verifyAll(verify) {
+    return MarketPriceRepository.verifyAll(verify)
   },
 
   async deleteById(id) {

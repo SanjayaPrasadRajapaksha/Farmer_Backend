@@ -183,7 +183,7 @@ export default async function parsePDFRows(
       economic_center_location_id: location_id,
       price_type_id,
       price: avgPrice,
-      Date: dateStr
+      date: dateStr
     })
   }
 

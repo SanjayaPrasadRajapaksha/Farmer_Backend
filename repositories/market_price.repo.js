@@ -1,14 +1,14 @@
 import Market_Price from "../models/market_price.model.js"
 
 const MarketPriceRepository = {
-  async create(price, date, economic_center_location_id, price_type_id, product_id, isVerify = false) {
+  async create(price, date, economic_center_location_id, price_type_id, product_id, verify = false) {
     return Market_Price.create({
       price,
-      Date: date,
+      date,
       economic_center_location_id,
       price_type_id,
       product_id,
-      isVerify,
+      verify,
     })
   },
 
@@ -23,20 +23,25 @@ const MarketPriceRepository = {
   async updateById(id, payload = {}) {
     const {
       price,
-      Date: date,
+      date,
+      Date,
       economic_center_location_id,
       price_type_id,
       product_id,
+      verify,
       isVerify,
     } = payload
 
+    const resolvedDate = date ?? Date
+    const resolvedVerify = verify ?? isVerify
+
     const updateData = {}
     if (price !== undefined) updateData.price = price
-    if (date !== undefined) updateData.Date = date
+    if (resolvedDate !== undefined) updateData.date = resolvedDate
     if (economic_center_location_id !== undefined) updateData.economic_center_location_id = economic_center_location_id
     if (price_type_id !== undefined) updateData.price_type_id = price_type_id
     if (product_id !== undefined) updateData.product_id = product_id
-    if (isVerify !== undefined) updateData.isVerify = isVerify
+    if (resolvedVerify !== undefined) updateData.verify = resolvedVerify
 
     if (Object.keys(updateData).length === 0) return 0
 
@@ -44,17 +49,17 @@ const MarketPriceRepository = {
     return result[0]
   },
 
-  async verifyById(id, isVerify) {
+  async verifyById(id, verify) {
     const result = await Market_Price.update(
-      { isVerify: isVerify },
+      { verify: verify },
       { where: { id } }
     )
     return result[0]
   },
 
-    async verifyAll(isVerify) {
+    async verifyAll(verify) {
     const result = await Market_Price.update(
-      { isVerify: isVerify },
+      { verify: verify },
       { where: {} }
     )
     return result[0]
