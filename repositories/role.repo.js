@@ -89,7 +89,19 @@ const RoleRepo = {
         } catch (err) {
             throw err;
         }
-    }
+    },
+
+    findOrCreateByPosition: async (position) => {
+        try {
+            const [role] = await Role.findOrCreate({
+                where: { position },
+                defaults: { position },
+            });
+            return role;
+        } catch (error) {
+            throw error;
+        }
+    },
 }
 
 

@@ -122,7 +122,7 @@ const RoleController = {
       console.error(error);
       res.status(500).json({
         response_code: 500,
-        status: false, message: 'Error occurred while fetching emoji!'
+        status: false, message: 'Error occurred while fetching role!'
       });
     }
   },
