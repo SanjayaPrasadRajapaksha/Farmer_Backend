@@ -1,3 +1,4 @@
+import cloudinary from "../config/cloudinary.js";
 import ProductRepo from "../repositories/product.repo.js";
 
 const ProductService = {
@@ -49,6 +50,29 @@ const ProductService = {
         }
     },
 
+    uploadImage: async (id, fileBase64, fileType) => {
+        try {
+            // Upload to Cloudinary
+            const result = await cloudinary.uploader.upload(
+                `data:${fileType};base64,${fileBase64}`,
+                { folder: "farmer_product_images" }
+            );
+
+            // Update DB with the image URL
+            const updated = await ProductRepo.uploadImage(id, result.secure_url);
+
+            return {
+                status: true,
+                imageUrl: result.secure_url
+            };
+        } catch (error) {
+            console.error(error);
+            return {
+                status: false,
+                message: error.message
+            };
+        }
+    },
 }
 
 export default ProductService;

@@ -1,3 +1,4 @@
+import upload from "../middleware/upload.js";
 import Product from "../models/product.model.js";
 
 const ProductRepo = {
@@ -69,7 +70,19 @@ const ProductRepo = {
         } catch (err) {
             throw err;
         }
-    }
+    },
+
+    uploadImage : async (id, imageUrl) => {
+        try {
+            const result = await Product.update(
+                { imageURL: imageUrl },
+                { where: { id } }
+            );
+            return result;
+        } catch (err) {
+            throw err;
+        }
+    },
 }
 
 

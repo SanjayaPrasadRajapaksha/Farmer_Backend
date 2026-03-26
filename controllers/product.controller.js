@@ -105,9 +105,9 @@ const ProductController = {
 
   updateById: async (req, res) => {
     const id = req.params.id;
-     const { name, unit, category_id } = req.body;
+    const { name, unit, category_id } = req.body;
     try {
-      const result = await ProductService.updateById(id,name, unit, category_id);
+      const result = await ProductService.updateById(id, name, unit, category_id);
       if (result == 0) {
         res.status(404).json({ response_code: 404, status: false, message: 'Product not found!' });
         return;
@@ -122,6 +122,46 @@ const ProductController = {
       res.status(500).json({
         response_code: 500,
         status: false, message: 'Error occurred while updating Product!'
+      });
+    }
+  },
+
+  uploadImage: async (req, res) => {
+    const id = req.params.id;
+
+    try {
+      if (!req.file) {
+        return res.status(400).json({ message: "No file uploaded" });
+      }
+
+      // Convert file buffer to base64
+      const fileBase64 = req.file.buffer.toString("base64");
+      const fileType = req.file.mimetype;
+
+      // Call service
+      const result = await ProductService.uploadImage(id, fileBase64, fileType);
+
+      if (result.status) {
+        res.status(200).json({
+          response_code: 200,
+          status: true,
+          message: 'Image uploaded successfully!',
+          imageUrl: result.imageUrl
+        });
+      } else {
+        res.status(400).json({
+          response_code: 400,
+          status: false,
+          message: result.message
+        });
+      }
+
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({
+        response_code: 500,
+        status: false,
+        message: 'Error occurred while uploading image!'
       });
     }
   },
