@@ -21,6 +21,10 @@ const Product = sequelize.define('Product', {
         type: DataTypes.TEXT,
         allowNull: true,
     },
+    public_id: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
     category_id: {
         type: DataTypes.INTEGER,
         allowNull: true,

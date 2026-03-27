@@ -43,8 +43,21 @@ const ProductService = {
 
     deleteById: async (id) => {
         try {
+            const product = await ProductRepo.findById(id);
+            if (!product) return 0;
+
+            // Delete the Cloudinary asset if we have its public_id stored
+            if (product.public_id) {
+                try {
+                    await cloudinary.uploader.destroy(product.public_id);
+                } catch (e) {
+                    console.warn("Cloudinary delete failed:", e.message);
+                }
+            }
+
             const result = await ProductRepo.deleteById(id);
             return result;
+
         } catch (error) {
             throw error;
         }
@@ -52,19 +65,43 @@ const ProductService = {
 
     uploadImage: async (id, fileBase64, fileType) => {
         try {
+            const product = await ProductRepo.findById(id);
+            if (!product) {
+                return {
+                    status: false,
+                    message: "Product not found"
+                };
+            }
+
+            // If product already has an image, remove it from Cloudinary first
+            if (product.public_id) {
+                try {
+                    await cloudinary.uploader.destroy(product.public_id);
+                } catch (e) {
+                    console.warn("Cloudinary old image delete failed:", e.message);
+                }
+            }
             // Upload to Cloudinary
             const result = await cloudinary.uploader.upload(
                 `data:${fileType};base64,${fileBase64}`,
                 { folder: "farmer_product_images" }
             );
 
-            // Update DB with the image URL
-            const updated = await ProductRepo.uploadImage(id, result.secure_url);
+            // ✅ Extract from result
+            const publicId = result.public_id;
+
+            // ✅ Save BOTH publicId + URL
+            const updated = await ProductRepo.uploadImage(
+                id,
+                publicId,
+                result.secure_url
+            );
 
             return {
                 status: true,
                 imageUrl: result.secure_url
             };
+
         } catch (error) {
             console.error(error);
             return {

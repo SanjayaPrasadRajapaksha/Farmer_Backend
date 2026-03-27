@@ -131,7 +131,11 @@ const ProductController = {
 
     try {
       if (!req.file) {
-        return res.status(400).json({ message: "No file uploaded" });
+        return res.status(400).json({
+          response_code: 400,
+          status: false,
+          message: "No file uploaded"
+        });
       }
 
       // Convert file buffer to base64

@@ -72,10 +72,13 @@ const ProductRepo = {
         }
     },
 
-    uploadImage : async (id, imageUrl) => {
+    uploadImage: async (id, publicId, imageUrl) => {
         try {
             const result = await Product.update(
-                { imageURL: imageUrl },
+                {
+                    public_id: publicId,
+                    imageURL: imageUrl
+                },
                 { where: { id } }
             );
             return result;
