@@ -34,12 +34,9 @@ const MarketPriceRepository = {
       economic_center_location_id,
       price_type_id,
       product_id,
-      verify,
-      isVerify,
     } = payload
 
     const resolvedDate = date ?? dateLegacy
-    const resolvedVerify = verify ?? isVerify
 
     const updateData = {}
     if (price !== undefined) updateData.price = price
@@ -47,7 +44,6 @@ const MarketPriceRepository = {
     if (economic_center_location_id !== undefined) updateData.economic_center_location_id = economic_center_location_id
     if (price_type_id !== undefined) updateData.price_type_id = price_type_id
     if (product_id !== undefined) updateData.product_id = product_id
-    if (resolvedVerify !== undefined) updateData.verify = resolvedVerify
 
     if (Object.keys(updateData).length === 0) return 0
 

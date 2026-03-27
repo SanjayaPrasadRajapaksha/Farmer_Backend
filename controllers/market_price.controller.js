@@ -98,9 +98,8 @@ const MarketPriceController = {
 
   async updateById(req, res) {
     const id = req.params.id
-    const { price, date, Date, economic_center_location_id, price_type_id, product_id, verify, isVerify } = req.body
+    const { price, date, Date, economic_center_location_id, price_type_id, product_id, verify } = req.body
     const resolvedDate = date ?? Date
-    const resolvedVerify = verify ?? isVerify
     try {
       const result = await MarketPriceService.updateById(id, {
         price,
@@ -108,7 +107,6 @@ const MarketPriceController = {
         economic_center_location_id,
         price_type_id,
         product_id,
-        verify: resolvedVerify,
       })
 
       if (result == 0) {
