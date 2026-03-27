@@ -1,4 +1,7 @@
+import Economic_Center_Location from "../models/economic_center_location.model.js"
 import Market_Price from "../models/market_price.model.js"
+import Price_Type from "../models/price_type.model.js"
+import Product from "../models/product.model.js"
 
 const MarketPriceRepository = {
   async create(price, date, economic_center_location_id, price_type_id, product_id, verify = false) {
@@ -17,14 +20,17 @@ const MarketPriceRepository = {
   },
 
   async getAll() {
-    return Market_Price.findAll({})
+    return Market_Price.findAll({
+      include: [Economic_Center_Location, Price_Type, Product],
+      order: [["date", "DESC"]],
+    })
   },
 
   async updateById(id, payload = {}) {
     const {
       price,
       date,
-      Date,
+      Date: dateLegacy,
       economic_center_location_id,
       price_type_id,
       product_id,
@@ -32,7 +38,7 @@ const MarketPriceRepository = {
       isVerify,
     } = payload
 
-    const resolvedDate = date ?? Date
+    const resolvedDate = date ?? dateLegacy
     const resolvedVerify = verify ?? isVerify
 
     const updateData = {}
