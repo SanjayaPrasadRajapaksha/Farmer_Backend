@@ -101,7 +101,7 @@ async function getPriceTypeId(typeName) {
   return priceType.id
 }
 
-export default async function parsePDFRows(
+export default async function parseDambullaPDFRows(
   text,
   locationName = "Dambulla",
   priceTypeName = "Daily Market Price"

@@ -4,7 +4,8 @@ import MarketPriceController from "../controllers/market_price.controller.js"
 
 const router = express.Router()
 
-router.post("/upload",upload.single("pdf"),MarketPriceController.uploadMarketPricesFromPDF);
+router.post("/upload_dambulla",upload.single("pdf"),MarketPriceController.uploadDambullaMarketPricesFromPDF);
+router.post("/upload_tambuttegama",upload.single("pdf"),MarketPriceController.uploadTambuttegamaMarketPricesFromPDF);
 router.post("/create", MarketPriceController.create);
 router.put("/updateById/:id", MarketPriceController.updateById);
 router.get("/getAll", MarketPriceController.getAll);
