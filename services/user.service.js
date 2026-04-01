@@ -188,12 +188,95 @@ const UserService = {
                     message: "Failed to save OTP in database!",
                 };
             }
-
             const credentialMessage = `
-            Your OTP is: ${otp}. It is valid for 5 minutes.
-            `;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Your OTP</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f6f6f6;
+    }
+    .container {
+      max-width: 600px;
+      margin: 40px auto;
+      background-color: #ffffff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .header {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      text-align: left;
+    }
+    .content {
+      font-size: 16px;
+      color: #333333;
+      line-height: 1.6;
+    }
+    .otp-container {
+      margin: 20px 0;
+    }
+    .otp-box {
+      display: inline-block;
+      width: 45px;
+      height: 55px;
+      line-height: 55px;
+      margin: 0 5px;
+      font-size: 22px;
+      font-weight: bold;
+      color: #27AE60;
+      border: 2px solid #27AE60;
+      border-radius: 6px;
+      background-color: #F4FFF7;
+    }
+    .warning {
+      color: #C0392B;
+      font-weight: bold;
+      margin-top: 15px;
+    }
+    .footer {
+      margin-top: 30px;
+      font-size: 14px;
+      color: #555555;
+      text-align: left;
+    }
+    .brand {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      Hello ${exUser[0].name.charAt(0).toUpperCase() + exUser[0].name.slice(1).toLowerCase()},
+    </div>
 
+    <div class="content">
+      <p>🔑 Your OTP code is:</p>
 
+      <div class="otp-container">
+        ${otp.split("").map(d => `<span class="otp-box">${d}</span>`).join("")}
+      </div>
+
+      <p class="warning">⏰ This OTP is valid for 5 minutes only.</p>
+    </div>
+
+    <div class="footer">
+      Best regards,<br>
+      <span class="brand">The FARMER Team</span>
+    </div>
+  </div>
+</body>
+</html>
+`;
             await sendEmail(email, credentialMessage, "OTP");
             return {
                 status: true,
@@ -388,6 +471,55 @@ const UserService = {
 
             const result = await UserRepo.verifyUserById(id, status);
             if (result == 1) {
+                if (user[0].isVerified == false) {
+                    const accountVerifyMessage = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Account Verified</title>
+</head>
+<body style="margin:0; padding:0; font-family: Arial, sans-serif; background-color:#f6f6f6;">
+
+  <div style="max-width:600px; margin:40px auto; background-color:#ffffff; padding:30px; border-radius:10px; box-shadow:0 4px 15px rgba(0,0,0,0.1);">
+    
+    <!-- Header -->
+    <div style="font-size:18px; font-weight:bold; margin-bottom:20px;">
+      Hello ${user[0].name.charAt(0).toUpperCase() + user[0].name.slice(1).toLowerCase()},
+    </div>
+
+    <!-- Content -->
+    <div style="font-size:16px; color:#333333; line-height:1.6;">
+      
+      <p style="margin:0 0 10px 0;">✅ Your account has been successfully verified!</p>
+      
+      <p style="margin:0 0 10px 0;">
+        You can now receive daily reports via email.
+      </p>
+
+      <p style="margin:0 0 10px 0;">
+        Thank you for registering with <strong>FARMER</strong>.
+      </p>
+
+      <!-- CTA Button -->
+      <div style="margin-top:20px;">
+      </div>
+
+    </div>
+
+    <!-- Footer -->
+    <div style="margin-top:30px; font-size:14px; color:#555555;">
+      Best regards,<br>
+      <span style="font-weight:bold;">The FARMER Team</span>
+    </div>
+
+  </div>
+
+</body>
+</html>
+`;
+                    await sendEmail(user[0].email, accountVerifyMessage, "Account Verified");
+                }
                 return {
                     status: true,
                     message: "User verification status updated successfully!",

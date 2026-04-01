@@ -17,6 +17,7 @@ const UserRepo = {
         address: address,
         password: password,
         role_id: role_id,
+        isActive: true,
       });
       return result;
     } catch (error) {
