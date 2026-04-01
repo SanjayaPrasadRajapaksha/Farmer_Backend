@@ -318,6 +318,8 @@ const UserController = {
         try {
             const result = await UserService.verifyUserById(id, status);
 
+            
+
             if (result.status) {
                 res.status(200).json({
                     response_code: 200,
