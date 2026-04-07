@@ -46,7 +46,6 @@ const UserController = {
             email,
             phone,
             address,
-            password,
             role_id, } = req.body;
 
         try {
@@ -54,7 +53,6 @@ const UserController = {
                 email,
                 phone,
                 address,
-                password,
                 role_id,);
             if (!result.status) {
                 res.status(400).json({ response_code: 400, error: result.message, });

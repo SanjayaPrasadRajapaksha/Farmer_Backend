@@ -6,7 +6,6 @@ const UserRepo = {
     email,
     phone,
     address,
-    password,
     role_id,
   ) => {
     try {
@@ -15,7 +14,6 @@ const UserRepo = {
         email: email,
         phone: phone,
         address: address,
-        password: password,
         role_id: role_id,
         isActive: true,
       });

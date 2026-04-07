@@ -12,7 +12,6 @@ const UserService = {
         email,
         phone,
         address,
-        password,
         role_id,
     ) => {
         try {
@@ -27,8 +26,7 @@ const UserService = {
 
             console.log("Email: ", email);
 
-            // Encrypt the password
-            const encrypted_pw = await bcrypt.hash(password, 10);
+    
 
             // Register the user
             const result = await UserRepo.registerCustomer(
@@ -36,7 +34,6 @@ const UserService = {
                 email,
                 phone,
                 address,
-                encrypted_pw,
                 role_id,
             );
 
