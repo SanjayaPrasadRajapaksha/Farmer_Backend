@@ -14,6 +14,8 @@ import Price_TypeRouter from "./routes/price_type.route.js";
 import ProductRouter from "./routes/product.route.js";
 import RoleRouter from "./routes/role.route.js";
 import UserRouter from "./routes/user.route.js";
+import FeedbackRouter from "./routes/feedback.route.js";
+import ContactRouter from "./routes/contact.route.js";
 
 dotenv.config();
 const app = express();
@@ -31,7 +33,8 @@ app.use('/api/price_type', Price_TypeRouter);
 app.use('/api/product', ProductRouter);
 app.use('/api/role', RoleRouter);
 app.use('/api/user', UserRouter);
-
+app.use('/api/feedback', FeedbackRouter);
+app.use('/api/contact', ContactRouter);
 async function startServer() {
     try {
         await sequelize.authenticate();

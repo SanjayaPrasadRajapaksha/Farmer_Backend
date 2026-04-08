@@ -12,7 +12,6 @@ const UserService = {
         email,
         phone,
         address,
-        password,
         role_id,
     ) => {
         try {
@@ -27,8 +26,7 @@ const UserService = {
 
             console.log("Email: ", email);
 
-            // Encrypt the password
-            const encrypted_pw = await bcrypt.hash(password, 10);
+    
 
             // Register the user
             const result = await UserRepo.registerCustomer(
@@ -36,11 +34,97 @@ const UserService = {
                 email,
                 phone,
                 address,
-                encrypted_pw,
                 role_id,
             );
+const accountCreationMessage = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Welcome to Farmer App</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f6f6f6;
+    }
+    .container {
+      max-width: 600px;
+      margin: 40px auto;
+      background-color: #ffffff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .header {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      color: #27AE60;
+    }
+    .content {
+      font-size: 16px;
+      color: #333333;
+      line-height: 1.6;
+    }
+    .status-box {
+      margin: 20px 0;
+      padding: 15px;
+      border: 2px solid #27AE60;
+      border-radius: 6px;
+      background-color: #F4FFF7;
+      color: #27AE60;
+      font-weight: bold;
+    }
+    .footer {
+      margin-top: 30px;
+      font-size: 14px;
+      color: #555555;
+      text-align: left;
+    }
+    .brand {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <div class="header">
+      🌱 Welcome to Farmer Web
+    </div>
+
+    <div class="content">
+      <p>Thank you for registering with us!</p>
+
+      <div class="status-box">
+        ✔ Your account has been created successfully
+      </div>
+
+      <p>
+        Our team is currently reviewing your account details.
+      </p>
+
+      <p>
+        📧 We will notify you via email once your account has been verified.
+      </p>
+    </div>
+
+    <div class="footer">
+      Best regards,<br>
+      <span class="brand">The FARMER Team</span>
+    </div>
+
+  </div>
+</body>
+</html>
+`;
 
             if (result) {
+                await sendEmail(email, accountCreationMessage, "Welcome to Farmer App");
+
                 return {
                     status: true,
                     message: "User registered successfully!",
