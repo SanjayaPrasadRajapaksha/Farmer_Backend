@@ -1,6 +1,6 @@
-import express from "express"
-import upload from "../config/multer.config.js"
-import MarketPriceController from "../controllers/market_price.controller.js"
+import express from "express";
+import upload from "../config/multer.config.js";
+import MarketPriceController from "../controllers/market_price.controller.js";
 
 const router = express.Router()
 
@@ -13,6 +13,8 @@ router.get("/getById/:id", MarketPriceController.findById);
 router.delete("/deleteById/:id", MarketPriceController.deleteById);
 router.put("/verifyById/:id", MarketPriceController.verifyById);
 router.put("/verifyAll", MarketPriceController.verifyAll);
+router.put("/verifyMany", MarketPriceController.verifyMany);
+router.post("/deleteMany", MarketPriceController.deleteMany);
 
 
 export default router

@@ -37,12 +37,20 @@ const MarketPriceService = {
     return MarketPriceRepository.verifyById(id, verify)
   },
 
-    async verifyAll(verify) {
+  async verifyMany(ids, verify) {
+    return MarketPriceRepository.verifyMany(ids, verify)
+  },
+
+  async verifyAll(verify) {
     return MarketPriceRepository.verifyAll(verify)
   },
 
   async deleteById(id) {
     return MarketPriceRepository.deleteById(id)
+  },
+
+  async deleteMany(ids) {
+    return MarketPriceRepository.deleteMany(ids)
   },
 
   async processDambullaPDF(input) {

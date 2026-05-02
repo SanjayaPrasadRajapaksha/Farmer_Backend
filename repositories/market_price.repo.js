@@ -59,7 +59,15 @@ const MarketPriceRepository = {
     return result[0]
   },
 
-    async verifyAll(verify) {
+  async verifyMany(ids, verify) {
+    const result = await Market_Price.update(
+      { verify: verify },
+      { where: { id: ids } }
+    )
+    return result[0]
+  },
+
+  async verifyAll(verify) {
     const result = await Market_Price.update(
       { verify: verify },
       { where: {} }
@@ -69,6 +77,10 @@ const MarketPriceRepository = {
 
   async deleteById(id) {
     return Market_Price.destroy({ where: { id } })
+  },
+
+  async deleteMany(ids) {
+    return Market_Price.destroy({ where: { id: ids } })
   },
 
   async bulkCreateMarketPrices(data) {

@@ -180,6 +180,37 @@ const MarketPriceController = {
     }
   },
 
+  verifyMany: async (req, res) => {
+    const { ids, verify, isVerify } = req.body
+    const resolvedVerify = verify ?? isVerify
+    const normalizedIds = Array.isArray(ids)
+      ? ids
+          .map((id) => Number.parseInt(id, 10))
+          .filter((id) => Number.isInteger(id) && id > 0)
+      : []
+
+    if (normalizedIds.length === 0) {
+      return res.status(400).json({ response_code: 400, status: false, message: "At least one market price id is required!" })
+    }
+
+    try {
+      const result = await MarketPriceService.verifyMany(normalizedIds, resolvedVerify)
+      if (result === 0) {
+        return res.status(404).json({ response_code: 404, status: false, message: "Market prices not found!" })
+      }
+
+      return res.status(200).json({
+        response_code: 200,
+        status: true,
+        message: "Market prices updated successfully!",
+        result,
+      })
+    } catch (error) {
+      console.error(error)
+      return res.status(500).json({ response_code: 500, status: false, message: "Error occurred while updating Market prices!" })
+    }
+  },
+
   async deleteById(req, res) {
     const id = req.params.id
     try {
@@ -191,6 +222,36 @@ const MarketPriceController = {
     } catch (error) {
       console.error(error)
       return res.status(500).json({ response_code: 500, status: false, message: "Error occurred while deleting Market price!" })
+    }
+  },
+
+  deleteMany: async (req, res) => {
+    const { ids } = req.body
+    const normalizedIds = Array.isArray(ids)
+      ? ids
+          .map((id) => Number.parseInt(id, 10))
+          .filter((id) => Number.isInteger(id) && id > 0)
+      : []
+
+    if (normalizedIds.length === 0) {
+      return res.status(400).json({ response_code: 400, status: false, message: "At least one market price id is required!" })
+    }
+
+    try {
+      const result = await MarketPriceService.deleteMany(normalizedIds)
+      if (result === 0) {
+        return res.status(404).json({ response_code: 404, status: false, message: "Market prices not found!" })
+      }
+
+      return res.status(200).json({
+        response_code: 200,
+        status: true,
+        message: "Market prices deleted successfully!",
+        result,
+      })
+    } catch (error) {
+      console.error(error)
+      return res.status(500).json({ response_code: 500, status: false, message: "Error occurred while deleting Market prices!" })
     }
   },
 
