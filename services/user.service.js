@@ -2,8 +2,8 @@ import bcrypt from "bcrypt";
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 import sendEmail from "../config/sendEmail.js";
-import UserRepo from "../repositories/user.repo.js";
 import RoleRepo from "../repositories/role.repo.js";
+import UserRepo from "../repositories/user.repo.js";
 dotenv.config();
 
 const UserService = {
@@ -26,7 +26,7 @@ const UserService = {
 
             console.log("Email: ", email);
 
-    
+
 
             // Register the user
             const result = await UserRepo.registerCustomer(
@@ -36,7 +36,7 @@ const UserService = {
                 address,
                 role_id,
             );
-const accountCreationMessage = `
+            const accountCreationMessage = `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -142,19 +142,64 @@ const accountCreationMessage = `
         }
     },
 
-    registerAdmin: async () => {
+    registerSuperAdmin: async () => {
         try {
             const password = process.env.ADMIN_PASSWORD;
             const email = process.env.ADMIN_EMAIL;
             const encrypted_pw = await bcrypt.hash(password, 10);
 
-            const existingUser = await UserRepo.getUserByEmail(
-                email,
-            );
+            // Create role if not exists (idempotent)
+            const position = "Super Admin";
+            const role = await RoleRepo.findOrCreateByPosition(position)
+
+            const existingUser = await UserRepo.getUserByEmail(email);
             if (existingUser[0]) {
                 return {
                     status: false,
                     message: "Super Admin user already exists.",
+                };
+            }
+
+            // Register the user
+            const result = await UserRepo.registerSuperAdmin(
+                email,
+                encrypted_pw,
+                role.id,
+            );
+
+            if (result) {
+                return {
+                    status: true,
+                    message: "User registered successfully!",
+                    user: result,
+                };
+            } else {
+                return {
+                    status: false,
+                    message: "User registration failed.",
+                };
+            }
+        } catch (error) {
+            if (error?.name === "SequelizeUniqueConstraintError" || error?.original?.code === "ER_DUP_ENTRY") {
+                return {
+                    status: false,
+                    message: "Super Admin user already exists.",
+                };
+            }
+            console.error("Error in registerUser: ", error.message);
+            throw error;
+        }
+    },
+
+    registerAdmin: async (name, email, phone, address, password, role_id) => {
+        try {
+            const encrypted_pw = await bcrypt.hash(password, 10);
+
+            const existingUser = await UserRepo.getUserByEmail(email);
+            if (existingUser[0]) {
+                return {
+                    status: false,
+                    message: "Admin user already exists.",
                 };
             }
             // Create role if not exists (idempotent)
@@ -163,12 +208,43 @@ const accountCreationMessage = `
 
             // Register the user
             const result = await UserRepo.registerAdmin(
+                name,
                 email,
+                phone,
+                address,
                 encrypted_pw,
                 role.id,
             );
-
+            const accountCredentialMessage = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome to Farmer Admin Panel</title>
+</head>
+<body style="margin:0; padding:0; font-family: Arial, sans-serif; background-color:#f6f6f6;">
+    <div style="max-width:600px; margin:40px auto; background-color:#ffffff; padding:30px; border-radius:10px; box-shadow:0 4px 15px rgba(0,0,0,0.1);">
+        <div style="font-size:18px; font-weight:bold; margin-bottom:20px;">
+            Hello ${name.charAt(0).toUpperCase() + name.slice(1).toLowerCase()},
+        </div>
+        <div style="font-size:16px; color:#333333; line-height:1.6;">
+            <p style="margin:0 0 10px 0;">🔑 Your account has been created successfully!</p>
+            <p style="margin:0 0 10px 0;">Here are your login credentials for the Farmer Admin Panel:</p>
+            <p style="margin:0 0 10px 0;"><strong>Email:</strong> ${email}</p>
+            <p style="margin:0 0 10px 0;"><strong>Password:</strong> ${password}</p>
+            <p style="margin:0 0 10px 0;">Please log in and change your password immediately for security reasons.</p>
+            <p style="margin:0 0 10px 0;">Thank you for being a part of the FARMER team!</p>
+        </div>
+        <div style="margin-top:30px; font-size:14px; color:#555555;">
+            Best regards,<br>
+            <span style="font-weight:bold;">The FARMER Team</span>
+        </div>
+    </div>
+</body>
+</html>
+`;
             if (result) {
+                await sendEmail(email, accountCredentialMessage, "Welcome to Farmer Admin Panel");
                 return {
                     status: true,
                     message: "User registered successfully!",
@@ -499,6 +575,12 @@ const accountCreationMessage = `
     getUserByEmail: async (email) => {
         try {
             // Check for existing email
+            if (error?.name === "SequelizeUniqueConstraintError" || error?.original?.code === "ER_DUP_ENTRY") {
+                return {
+                    status: false,
+                    message: "Admin user already exists.",
+                };
+            }
             const extUser = await UserRepo.getUserByEmail(email);
             if (extUser[0]) {
                 return {

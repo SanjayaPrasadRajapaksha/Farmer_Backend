@@ -70,10 +70,10 @@ const UserController = {
         }
     },
 
-    registerAdmin: async (req, res) => {
+    registerSuperAdmin: async (req, res) => {
 
         try {
-            const result = await UserService.registerAdmin();
+            const result = await UserService.registerSuperAdmin();
             if (!result.status) {
                 return res.status(400).json({
                     response_code: 400,
@@ -96,6 +96,48 @@ const UserController = {
             });
         }
     },
+
+    registerAdmin: async (req, res) => {
+        const {
+            name,
+            email,
+            phone,
+            address,
+            password,
+            role_id, } = req.body;
+
+        try {
+            const result = await UserService.registerAdmin(
+                name,
+                email,
+                phone,
+                address,
+                password,
+                role_id
+            );
+            if (!result.status) {
+                return res.status(400).json({
+                    response_code: 400,
+                    status: false,
+                    message: result.message
+                });
+            }
+            return res.status(201).json({
+                response_code: 201,
+                status: true,
+                message: result.message,
+                user: result.user
+            });
+        } catch (error) {
+            console.error('Error submitting request form:', error);
+            return res.status(500).json({
+                response_code: 500,
+                status: false,
+                message: 'Internal server error',
+            });
+        }
+    },
+
 
     userLogin: async (req, res) => {
         const { email, password } = req.body;
@@ -316,7 +358,7 @@ const UserController = {
         try {
             const result = await UserService.verifyUserById(id, status);
 
-            
+
 
             if (result.status) {
                 res.status(200).json({

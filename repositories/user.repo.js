@@ -22,8 +22,8 @@ const UserRepo = {
       throw error;
     }
   },
-  
-  registerAdmin: async (
+
+  registerSuperAdmin: async (
     email,
     password,
     role_id,
@@ -43,11 +43,51 @@ const UserRepo = {
     }
   },
 
+  registerAdmin: async (
+    name,
+    email,
+    phone,
+    address,
+    encrypted_pw,
+    role_id,
+  ) => {
+    try {
+      const result = await User.create({
+        name: name,
+        email: email,
+        phone: phone,
+        address: address,
+        password: encrypted_pw,
+        role_id: role_id,
+        isVerified: true,
+        isActive: true,
+      });
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  },
+
   getUserByEmail: async (email) => {
     try {
       const result = await User.findAll({
         where: {
           email: email,
+        },
+      });
+      console.log(result);
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+    getUserByEmailWithRole: async (email,role_id) => {
+    try {
+      const result = await User.findAll({
+        where: {
+          email: email,
+          role_id: role_id,
         },
       });
       console.log(result);
@@ -173,7 +213,7 @@ const UserRepo = {
     }
   },
 
-    getUserByRoleId: async (role_id) => {
+  getUserByRoleId: async (role_id) => {
     try {
       const result = await User.findAll({
         where: {
