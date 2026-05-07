@@ -144,8 +144,8 @@ const UserService = {
 
     registerSuperAdmin: async () => {
         try {
-            const password = process.env.ADMIN_PASSWORD;
-            const email = process.env.ADMIN_EMAIL;
+            const password = process.env.SUPER_ADMIN_PASSWORD;
+            const email = process.env.SUPER_ADMIN_EMAIL;
             const encrypted_pw = await bcrypt.hash(password, 10);
 
             // Create role if not exists (idempotent)
@@ -159,9 +159,10 @@ const UserService = {
                     message: "Super Admin user already exists.",
                 };
             }
-
+const name = process.env.SUPER_ADMIN_NAME;
             // Register the user
             const result = await UserRepo.registerSuperAdmin(
+                name,
                 email,
                 encrypted_pw,
                 role.id,

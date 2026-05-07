@@ -24,12 +24,14 @@ const UserRepo = {
   },
 
   registerSuperAdmin: async (
+    name,
     email,
     password,
     role_id,
   ) => {
     try {
       const result = await User.create({
+        name,
         email,
         password,
         role_id,
