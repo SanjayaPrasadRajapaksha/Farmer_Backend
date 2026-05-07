@@ -4,18 +4,20 @@ import express from "express";
 import sequelize from "./config/db.config.js";
 import { initializeCategoryTable } from "./models/category.model.js";
 import "./models/economic_center_location.model.js";
+import "./models/faq.model.js";
 import "./models/market_price.model.js";
 import "./models/price_type.model.js";
 import "./models/product.model.js";
 import CategoryRouter from "./routes/category.route.js";
+import ContactRouter from "./routes/contact.route.js";
 import Economic_CenterRouter from "./routes/economic_center_location.route.js";
+import FaqRouter from "./routes/faq.route.js";
+import FeedbackRouter from "./routes/feedback.route.js";
 import market_price_router from "./routes/market_price.route.js";
 import Price_TypeRouter from "./routes/price_type.route.js";
 import ProductRouter from "./routes/product.route.js";
 import RoleRouter from "./routes/role.route.js";
 import UserRouter from "./routes/user.route.js";
-import FeedbackRouter from "./routes/feedback.route.js";
-import ContactRouter from "./routes/contact.route.js";
 
 dotenv.config();
 const app = express();
@@ -35,6 +37,7 @@ app.use('/api/role', RoleRouter);
 app.use('/api/user', UserRouter);
 app.use('/api/feedback', FeedbackRouter);
 app.use('/api/contact', ContactRouter);
+app.use('/api/faq', FaqRouter);
 async function startServer() {
     try {
         await sequelize.authenticate();
