@@ -10,6 +10,7 @@ import "./models/price_type.model.js";
 import "./models/product.model.js";
 import CategoryRouter from "./routes/category.route.js";
 import ContactRouter from "./routes/contact.route.js";
+import DailyEmailRouter from "./routes/daily_email.route.js";
 import Economic_CenterRouter from "./routes/economic_center_location.route.js";
 import FaqRouter from "./routes/faq.route.js";
 import FeedbackRouter from "./routes/feedback.route.js";
@@ -37,6 +38,7 @@ app.use('/api/role', RoleRouter);
 app.use('/api/user', UserRouter);
 app.use('/api/feedback', FeedbackRouter);
 app.use('/api/contact', ContactRouter);
+app.use('/api/daily_email', DailyEmailRouter);
 app.use('/api/faq', FaqRouter);
 async function startServer() {
     try {
